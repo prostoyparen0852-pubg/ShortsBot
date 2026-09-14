@@ -134,7 +134,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def download_and_send_video(query, url):
     output_path = f"downloads/{random.randint(100000,999999)}.mp4"
     os.makedirs("downloads", exist_ok=True)
-    ydl_opts = {"outtmpl": output_path, "format": "best[ext=mp4]/best", "quiet": True}
+    ydl_opts = {"outtmpl": output_path, "format": "best[ext=mp4]/best", "quiet": True, "extractor_args": {"youtube": {"player_client": ["android"]}}}
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
@@ -151,7 +151,7 @@ async def search_and_show(query, search_term, count, prefix, context):
     sm = rs()
     await query.edit_message_text("🔎 " + stylize("Qidirilmoqda", sm) + "...")
     try:
-        ydl_opts = {"quiet": True, "extract_flat": True}
+        ydl_opts = {"quiet": True, "extract_flat": True, "extractor_args": {"youtube": {"player_client": ["android"]}}}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(f"ytsearch{count}:{search_term}", download=False)
         entries = info.get("entries", [])
@@ -343,7 +343,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "format": "bestaudio/best",
             "outtmpl": base_path + ".%(ext)s",
             "postprocessors": [{"key": "FFmpegExtractAudio", "preferredcodec": "mp3", "preferredquality": "192"}],
-            "quiet": True,
+            "quiet": True, "extractor_args": {"youtube": {"player_client": ["android"]}},
         }
         final_path = base_path + ".mp3"
         try:
